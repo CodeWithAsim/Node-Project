@@ -1,0 +1,175 @@
+<html>
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Weather App</title>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Kdam+Thmor+Pro&display=swap');
+
+
+        h1{
+            text-align: center;
+            text-transform: capitalize;
+            font-family: 'Kdam Thmor Pro', sans-serif;
+            margin-top: 20;
+        }
+        
+        html,body{
+            padding: 0;
+            margin: 0;
+        }
+
+        body{
+            background-color:#dddddd;
+        }
+        
+    </style>
+
+</head>
+<body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+    <h1>Current Weather</h1>
+
+    <div>
+
+        <div style=" border-radius: 2%; background-color: rgb(104, 198, 253); text-align: center ;width: 20%;height: 70%;position: absolute;top: 20%;left: 40%;" >
+           
+            <div id="pic">
+                <img  src="" style="width: 80; height: 80; margin: 80px;"/>
+            </div>
+
+            <!-- https://www.pngmart.com/files/20/Sun-PNG-Clipart.png -->
+            
+            <div style="display:flex ; justify-content: center ; align-items: center ; text-align: center ;"> 
+                <i class="fa-solid fa-location-pin" style="color: rgb(73, 75, 77);"></i>
+                <p style="padding-top: 15px; margin-left: 10px;">{%temp_city%} , {%temp_country%}</p>
+            </div>
+             
+            <p id="date" >FRI | JUNE 13 | 10:43 AM</p>
+
+
+            <h2 id="tempr" style="margin-bottom:0px; margin-top : 35px">{%temp_degree%} &deg;C</h2>
+              
+            <hr/>
+
+            <div style="display: flex ; text-align: center; justify-content: center;">
+                <p style="opacity: 0.7; "> Min &nbsp;</p>
+                <p id="tempr_min" style="opacity: 0.7; ">{%temp_min%}</p>
+                <p style="opacity: 0.7; ">&nbsp;&deg;C &nbsp;|&nbsp; Max &nbsp;</p>
+                <p id="tempr_max" style="opacity: 0.7; ">{%temp_max%} </p>
+                <p style="opacity: 0.7; ">&nbsp;&deg;C</p>
+            </div>
+            
+        </div>
+
+
+    </div>
+
+    <script>
+
+        var pic = document.getElementById("pic")
+        var condition = "{%status%}" 
+        if(condition == "Clear")
+        {
+            pic.innerHTML = "<img  src='https://www.pngmart.com/files/20/Sun-PNG-Clipart.png' style='width: 80; height: 80; margin: 80px;'/>";
+        }   
+        else if(condition == "Rain")    
+        {
+            pic.innerHTML = "<img  src='https://www.pngmart.com/files/12/Sun-And-Cloud-PNG-Photos.png' style='width: 80; height: 80; margin: 80px;'/>";
+        }
+        else if(condition == "Haze")
+        {
+            pic.innerHTML = "<img  src='https://www.pngmart.com/files/3/Wind-PNG-Photos.png' style='width: 80; height: 80; margin: 80px;'/>";
+        }
+        else // Clouds
+        {
+            pic.innerHTML = "<img  src='https://www.pngmart.com/files/12/Vector-Sun-And-Cloud-PNG-Image.png' style='width: 80; height: 80; margin: 80px;'/>";
+        }
+
+        var date_section = document.getElementById("date")
+
+        var tempr = document.getElementById("tempr")
+        var var_tempr = parseInt(tempr.innerHTML)
+        var f_tempr = var_tempr-273
+        tempr.innerHTML = f_tempr + "&deg;C"
+
+        var tempr_min = document.getElementById("tempr_min")
+        var var_tempr_min = parseInt(tempr_min.innerHTML)
+        var f_tempr_min = var_tempr_min-273
+        tempr_min.innerHTML = f_tempr_min 
+
+        var tempr_max = document.getElementById("tempr_max")
+        var var_tempr_max = parseInt(tempr_max.innerHTML)
+        var f_tempr_max = var_tempr_max-273
+        tempr_max.innerHTML = f_tempr_max 
+
+        const setDayInfo = () => {
+
+            const days = new Array(7);
+
+            days[0]="MON"
+            days[1]="TUES"
+            days[2]="WED"
+            days[3]="THUR"
+            days[4]="FRI"
+            days[5]="SAT"
+            days[6]="SUN"
+
+            const months = ["JAN","FEB","MAR","APR","MAY","JUNE","JULY","AUG","SEP","OCT","NOV","DEC"] ;
+
+            var d = new Date();
+
+            var day = days[d.getDay()];
+
+            var month = months[d.getMonth()]
+
+            var  date = d.getDate();
+
+            return `${day} | ${date} ${month}`
+        }
+
+        var period = "AM"
+
+        const setTimeInfo = () => {
+            
+            var d = new Date();
+
+            var hour = d.getHours()
+
+            if(hour>12)
+            {
+                hour = hour-12
+                period ="PM"
+            }
+
+            if(hour==0)
+            {
+                hour = 1
+                period ="AM"
+            }
+
+            var min = d.getMinutes()
+            
+            if(min<10)
+            {
+                min = "0"+min
+            }
+
+            return `${hour}:${min} ${period}`
+        }
+
+        date_section.innerHTML = setDayInfo()+" | "+ setTimeInfo() ;
+        
+    </script>
+
+</body>
+</html>
